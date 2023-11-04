@@ -5,14 +5,10 @@ import traceback
 import sys
 
 from communicator.deviceconnection import DeviceConnection
-from utils.logging import Logger
-from utils.constants import *
 from time import sleep
-from broker import Broker
+from communicator.broker import Broker
 
 class Communicator:
-
-    logger: Logger = Logger.get('proxy')
 
     def __init__(
         self,
@@ -34,7 +30,7 @@ class Communicator:
     def __listen(self):
         self.__socket.bind((self.__addr, self.__port))
         self.__socket.listen(self.__backlog)
-        self.__class__.logger.info(f'Executando na porta {self.__port}.')
+        print(f'Executando na porta {self.__port}.')
 
         while True:
             conn, addr = self.__socket.accept()
@@ -48,19 +44,19 @@ class Communicator:
                     conn.close()
                     continue
                 elif len(res) < 8 or len(res) > 13 or (not res.isnumeric()):
-                    self.__class__.logger.error(f'Dispositivo ou aplicação {res} falhou em abrir a conexão - ID inválido')
+                    print(f'Dispositivo ou aplicação {res} falhou em abrir a conexão - ID inválido')
                     data = "fail"
                     conn.send(data)
                     sys.stdout.flush()
                     conn.close()
                     continue
                 else:
-                    self.__class__.logger.info(f'Dispositivo {res} abriu conexão')
+                    print(f'Dispositivo {res} abriu conexão')
                     DeviceConnection(
                         conn, addr, self.__bufferLen, self.__connected_devices, self.__broker).start()
 
             except Exception as ex:
-                self.__class__.logger.error(f'Dispositivo {res} falhou em abrir a conexão')
+                print(f'Dispositivo {res} falhou em abrir a conexão')
                 traceback.print_exception(type(ex), ex, ex.__traceback__)
                 continue
            
@@ -69,9 +65,5 @@ class Communicator:
         self.__listen()
 
     def close(self):
-        self.__class__.logger.info(f'Encerrando o proxy.')
-
-        for desk in DeskConnection.get_authenticated_desks().keys():
-            DeskConnection.get_authenticated_desks()[desk].close()
-
+        print(f'Encerrando o proxy.')
         self.__socket.close()

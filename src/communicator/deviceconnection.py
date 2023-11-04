@@ -5,13 +5,9 @@ import traceback
 from threading import Thread, Lock, Semaphore, get_native_id
 from queue import Queue, Full
 from time import sleep
-from broker import Broker
-
-from utils.logging import Logger
+from communicator.broker import Broker
 
 class DeviceConnection():
-
-    logger = Logger.get("device_manager")
 
     def __init__(
         self,
@@ -29,11 +25,11 @@ class DeviceConnection():
         self.__connected_devices = connected_devices
         self.__broker = broker
 
-        Connection.logger.info(f"Dispositivo {addr} conectado.")
+        print(f"Dispositivo {addr} conectado.")
 
         ret = self.__broker.add_publisher(self.__id)
         if(not ret):
-            Connection.logger.error(f"Já existe dispositivo com ID {self.__id} conectado.")
+            print(f"Já existe dispositivo com ID {self.__id} conectado.")
             data = "fail"
             try:
                 self.__connection.send(data)
@@ -52,7 +48,7 @@ class DeviceConnection():
     
     
     def __finish(self, active_connection = True):
-        DeviceConnection.logger.info(f"Finalizando tudo para o Dispositivo {self.__id}.")
+        print(f"Finalizando tudo para o Dispositivo {self.__id}.")
         self.__stop_threads = True
         try:
             self.__connection.shutdown(socket.SHUT_RDWR)
@@ -82,12 +78,12 @@ class DeviceConnection():
             while True:
                 socket_data = self.__receive()
                 if(socket_data == "alive"):
-                    DeviceConnection.logger.info(f"Dipositivo {self.__id} está vivo.")
+                    print(f"Dipositivo {self.__id} está vivo.")
                 else:
                     if(socket_data.isnumeric()):
                         self.__broker.publish(self.__id,socket_data)
         except Exception as ex:
-            DeviceConnection.logger.error(f"Erro comunicando com o Dispositivo {self.__id}.")
+            print(f"Erro comunicando com o Dispositivo {self.__id}.")
             self.__broker.remove_pub(self.__id)
             self.__finish()
         return ret

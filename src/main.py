@@ -3,9 +3,6 @@
 import os
 import sys
 import time
-import environ
-
-env = environ.Env()
 
 from communicator.communicator import Communicator
 

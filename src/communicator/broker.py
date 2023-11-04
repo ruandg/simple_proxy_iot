@@ -5,10 +5,7 @@ import traceback
 import sys
 from threading import Lock
 
-
-
 class Broker:
-    logger: Logger = Logger.get('broker')
     
     def __init__(
         self
@@ -39,7 +36,7 @@ class Broker:
                     try:
                         sub.send_data(data)
                     except Full:
-                        DeskConnection.logger.info(f"Fila de mensagens cheia")
+                        print("Fila de mensagens cheia")
 
     def remove_pub(self, pub_id):
         with self.__mutex:
