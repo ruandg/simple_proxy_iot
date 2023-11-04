@@ -71,10 +71,13 @@ class DeviceConnection():
                     print(f"Dispositivo {self.__id} fechou conexão.")
                     self.__broker.remove_pub(self.__id)
                     self.__finish()
+                    return
             except Exception as ex:
                 print(f"Erro comunicando com o Dispositivo {self.__id}.")
                 self.__broker.remove_pub(self.__id)
                 self.__finish()
+                return
+
 
     def start(self):
         ret = self.__broker.add_publisher(self.__id)
