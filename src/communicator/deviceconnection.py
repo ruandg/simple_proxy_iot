@@ -82,14 +82,15 @@ class DeviceConnection():
             try:
                 self.__connection.send(data)
             except:
-                print(f"Erro comunicando com o Dispositivo {self.__id}.")
+                print(f"Erro enviando fail ao Dispositivo {self.__id}.")
             self.__finish()
+            return
         else:
             data = "ok"
             try:
                 self.__connection.send(data)
             except:
-                print(f"Erro comunicando com o Dispositivo {self.__id}.")
+                print(f"Erro enviando ok ao Dispositivo {self.__id}.")
                 self.__broker.remove_pub(self.__id)
                 self.__finish()
-        Thread(target=self.__execute, daemon=False).start()
+            Thread(target=self.__execute, daemon=False).start()
