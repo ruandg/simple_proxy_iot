@@ -80,7 +80,7 @@ class DeviceConnection():
             print(f"Já existe dispositivo com ID {self.__id} conectado.")
             data = "fail"
             try:
-                self.__connection.send(data)
+                self.__send(data)
             except Exception as ex:
                 print(f"Erro enviando fail ao Dispositivo {self.__id}.")
                 traceback.print_exception(type(ex), ex, ex.__traceback__)
@@ -89,7 +89,7 @@ class DeviceConnection():
         else:
             data = "ok"
             try:
-                self.__connection.send(data)
+                self.__send(data)
             except Exception as ex:
                 print(f"Erro enviando ok ao Dispositivo {self.__id}.")
                 traceback.print_exception(type(ex), ex, ex.__traceback__)
