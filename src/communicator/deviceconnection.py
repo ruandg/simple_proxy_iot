@@ -74,8 +74,6 @@ class DeviceConnection():
             self.__finish()
 
     def start(self):
-        self.__connection.settimeout(15.0)
-
         ret = self.__broker.add_publisher(self.__id)
         if(not ret):
             print(f"Já existe dispositivo com ID {self.__id} conectado.")
@@ -96,4 +94,5 @@ class DeviceConnection():
                 traceback.print_exception(type(ex), ex, ex.__traceback__)
                 self.__broker.remove_pub(self.__id)
                 self.__finish()
+            self.__connection.settimeout(15.0)
             Thread(target=self.__execute, daemon=False).start()
