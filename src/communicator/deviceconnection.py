@@ -30,11 +30,6 @@ class DeviceConnection():
     @property
     def _id(self):
         return self.__id
-
-    @property
-    def token(self):
-        return self.__token
-    
     
     def __finish(self, active_connection = True):
         print(f"Finalizando tudo para o Dispositivo {self.__id}.")
@@ -89,5 +84,11 @@ class DeviceConnection():
             except:
                 pass
             self.__finish()
-            
+        else:
+            data = "ok"
+            try:
+                self.__connection.send(data)
+                sys.stdout.flush()
+            except:
+                pass
         Thread(target=self.__execute, daemon=False).start()
