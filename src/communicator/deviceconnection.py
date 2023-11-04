@@ -26,16 +26,6 @@ class DeviceConnection():
 
         print(f"Dispositivo {addr} conectado.")
 
-        ret = self.__broker.add_publisher(self.__id)
-        if(not ret):
-            print(f"Já existe dispositivo com ID {self.__id} conectado.")
-            data = "fail"
-            try:
-                self.__connection.send(data)
-                sys.stdout.flush()
-            except:
-                pass
-            self.__finish()
 
     @property
     def _id(self):
@@ -88,4 +78,16 @@ class DeviceConnection():
 
     def start(self):
         self.__connection.settimeout(15.0)
+
+        ret = self.__broker.add_publisher(self.__id)
+        if(not ret):
+            print(f"Já existe dispositivo com ID {self.__id} conectado.")
+            data = "fail"
+            try:
+                self.__connection.send(data)
+                sys.stdout.flush()
+            except:
+                pass
+            self.__finish()
+            
         Thread(target=self.__execute, daemon=False).start()
