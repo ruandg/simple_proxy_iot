@@ -5,8 +5,7 @@ import traceback
 from threading import Thread, Lock, Semaphore, get_native_id
 from queue import Queue, Full
 from time import sleep
-
-import pika
+from broker import Broker
 
 from utils.logging import Logger
 
@@ -20,6 +19,7 @@ class DeviceConnection():
         addr: tuple,
         bufferLen: int,
         connected_devices = None,
+        broker = None
     ):        
         self.__stop_threads = False
         self.__id: str = None
@@ -27,8 +27,20 @@ class DeviceConnection():
         self.__bufferLen: int = bufferLen
         self.__socket_exception_flag = False
         self.__connected_devices = connected_devices
+        self.__broker = broker
 
         Connection.logger.info(f"Dispositivo {addr} conectado.")
+
+        ret = self.__broker.add_publisher(self.__id)
+        if(not ret):
+            Connection.logger.error(f"Já existe dispositivo com ID {self.__id} conectado.")
+            data = "fail"
+            try:
+                self.__connection.send(data)
+                sys.stdout.flush()
+            except:
+                pass
+            self.__finish()
 
     @property
     def _id(self):
@@ -38,96 +50,48 @@ class DeviceConnection():
     def token(self):
         return self.__token
     
-   
-    def __socket_send_decorator(self, function, data):
-        try:
-            function(data)
-        except Exception as ex:
-            self.__socket_exception_flag = True
-            raise ex
-
-    def __socket_receive_decorator(self, function):
-        data = None
-        try:
-            data = function()
-        except Exception as ex:
-            self.__socket_exception_flag = True
-            raise ex
-
-        return data
     
     def __finish(self, active_connection = True):
         DeviceConnection.logger.info(f"Finalizando tudo para o Dispositivo {self.__id}.")
         self.__stop_threads = True
-        self.__semaphore_ping.release()
-
         try:
-            if(active_connection == False):
-                DeviceConnection.logger.info(f"Enviando resposta de erro para o Dispositivo {self.__id}.")
-                self.__socket_send_decorator(self.__send, self.__DEFAULT_JSON_RES)
-        except:
-            pass
-     
-        try:
-            if(active_connection == True and self.__id in self.__connected_desks.keys()):
-                self.__connected_devices.pop(self.__id) 
             self.__connection.shutdown(socket.SHUT_RDWR)
             self.__connection.close()
         except:
             pass
-
-        if self.__RPC != None and self.__RPC.is_open():
-            try:
-                self.__RPC.stop_consuming()
-            except:
-                return
-
         return
 
-    def __receive(self) -> dict:
+    def __receive(self) -> str:
         try:
-            data = self.__connection.recv(self.__bufferLen)[:-1]
+            data = self.__connection.recv(self.__bufferLen)
             sys.stdout.flush()
-            data = json.loads(data.decode())
+            data = data.decode("utf-8")
             return data
         except Exception as ex:
             raise ex
 
-
-    def __send(self, data: dict):
+    def __send(self, data: str):
         try:
-            data = json.dumps(data)
-            self.__connection.send(data.encode())
+            self.__connection.send(data.encode("ascii"))
             sys.stdout.flush()
         except Exception as ex:
             raise ex            
 
-    def __isauthenticated(self):
-        return self.__id != None and self.__token != None
-
-    def __login(self):
+    def execute(self):
         try:
-            socket_data = self.__socket_receive_decorator(self.__receive)
-           
-        
+            while True:
+                socket_data = self.__receive()
+                if(socket_data == "alive"):
+                    DeviceConnection.logger.info(f"Dipositivo {self.__id} está vivo.")
+                else:
+                    if(socket_data.isnumeric()):
+                        self.__broker.publish(self.__id,socket_data)
         except Exception as ex:
-            DeviceConnection.logger.error(f"Falha de comunicação com o dispositivo {self.__id} durante o LOGIN.")
-            self.__finish(active_connection = False)
-        return
-
-    def __logout(self, _id: str, token: str):
-        if _id == self.__id and token == self.__token:
-            self.close()
-
-
-
-    def execute(self, cmd: dict) -> dict:
-        try:
-           
-        except Exception as ex:
-            raise ex
+            DeviceConnection.logger.error(f"Erro comunicando com o Dispositivo {self.__id}.")
+            self.__broker.remove_pub(self.__id)
+            self.__finish()
         return ret
 
     def start(self):
         self.__connection.settimeout(15.0)
-        Thread(target=self.__login, daemon=False).start()
+        Thread(target=self.__execute, daemon=False).start()

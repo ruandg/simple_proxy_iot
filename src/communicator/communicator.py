@@ -8,6 +8,7 @@ from communicator.deviceconnection import DeviceConnection
 from utils.logging import Logger
 from utils.constants import *
 from time import sleep
+from broker import Broker
 
 class Communicator:
 
@@ -28,24 +29,26 @@ class Communicator:
         self.__backlog = backlog
         self.__socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.__connected_apps = dict()
-        self.__connected_devices = dict()
+        self.__broker = Broker()
 
     def __listen(self):
         self.__socket.bind((self.__addr, self.__port))
         self.__socket.listen(self.__backlog)
-
         self.__class__.logger.info(f'Executando na porta {self.__port}.')
 
         while True:
             conn, addr = self.__socket.accept()
             try:
                 res = conn.recv(self.__bufferLen)
+                res = res.decode("utf-8")
                 sys.stdout.flush()
                 if(res == "app"):
                     #app connected
+                    #create thread for the app 
+                    conn.close()
+                    continue
                 elif len(res) < 8 or len(res) > 13 or (not res.isnumeric()):
-                    self.__class__.logger.error(f'Dispositivo {res} falhou em abrir a conexão - ID inválido')
+                    self.__class__.logger.error(f'Dispositivo ou aplicação {res} falhou em abrir a conexão - ID inválido')
                     data = "fail"
                     conn.send(data)
                     sys.stdout.flush()
@@ -53,19 +56,8 @@ class Communicator:
                     continue
                 else:
                     self.__class__.logger.info(f'Dispositivo {res} abriu conexão')
-
-                    if res in self.__connected_devices.keys() and self.__connected_devices[res]:
-                        try:
-                            self.__class__.logger.error(f'Dispositivo {res} já possui conexão ativa')
-                            conn.send("fail")
-                            sys.stdout.flush()
-                            conn.close()
-                        except:
-                            pass
-                        continue
-                    else:
-                        DeskConnection(
-                            conn, addr, self.__bufferLen, self.__https_client, self.__rpcsrv, self.__connected_desks).start()
+                    DeviceConnection(
+                        conn, addr, self.__bufferLen, self.__connected_devices, self.__broker).start()
 
             except Exception as ex:
                 self.__class__.logger.error(f'Dispositivo {res} falhou em abrir a conexão')
