@@ -66,6 +66,7 @@ class DeviceConnection():
                     print(f"Dipositivo {self.__id} está vivo.")
                 else:
                     if(socket_data.isnumeric()):
+                        print(f"{self.__id} publicando {socket_data} no broker.")
                         self.__broker.publish(self.__id,socket_data)
         except Exception as ex:
             print(f"Erro comunicando com o Dispositivo {self.__id}.")
