@@ -61,8 +61,8 @@ class DeviceConnection():
             raise ex            
 
     def __execute(self):
-        try:
-            while True:
+        while True:
+            try:
                 socket_data = self.__receive()
                 if(socket_data == "alive"):
                     print(f"Dipositivo {self.__id} está vivo.")
@@ -70,10 +70,10 @@ class DeviceConnection():
                     if(socket_data.isnumeric()):
                         print(f"{self.__id} publicando {socket_data} no broker.")
                         self.__broker.publish(self.__id,socket_data)
-        except Exception as ex:
-            print(f"Erro comunicando com o Dispositivo {self.__id}.")
-            self.__broker.remove_pub(self.__id)
-            self.__finish()
+            except Exception as ex:
+                print(f"Erro comunicando com o Dispositivo {self.__id}.")
+                self.__broker.remove_pub(self.__id)
+                self.__finish()
 
     def start(self):
         ret = self.__broker.add_publisher(self.__id)
