@@ -12,12 +12,13 @@ class DeviceConnection():
     def __init__(
         self,
         conn: socket.socket,
+        id: None,
         addr: tuple,
         bufferLen: int,
         broker = None
     ):        
         self.__stop_threads = False
-        self.__id: str = None
+        self.__id: str = id
         self.__connection: socket.socket = conn
         self.__bufferLen: int = bufferLen
         self.__socket_exception_flag = False
