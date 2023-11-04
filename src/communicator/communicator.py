@@ -35,6 +35,7 @@ class Communicator:
         while True:
             conn, addr = self.__socket.accept()
             try:
+                conn.settimeout(15)
                 res = conn.recv(self.__bufferLen)
                 res = res.decode("utf-8")
                 sys.stdout.flush()

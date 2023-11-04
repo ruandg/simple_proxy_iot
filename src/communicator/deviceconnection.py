@@ -43,9 +43,7 @@ class DeviceConnection():
 
     def __receive(self) -> str:
         try:
-            self.__connection.settimeout(15)
             data = self.__connection.recv(self.__bufferLen)
-            self.__connection.settimeout(None)
             sys.stdout.flush()
             data = data.decode("utf-8")
             return data
