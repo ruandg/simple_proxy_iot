@@ -18,9 +18,9 @@ class Broker:
         with self.__mutex:
             if not(pub_id in self.__subscribers):
                 self.__subscribers[pub_id] = []
-                return true
+                return True
             else:
-                return false
+                return False
 
     def add_subscriber(self, pub_id, sub):
         with self.__mutex:
