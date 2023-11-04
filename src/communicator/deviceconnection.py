@@ -14,7 +14,6 @@ class DeviceConnection():
         conn: socket.socket,
         addr: tuple,
         bufferLen: int,
-        connected_devices = None,
         broker = None
     ):        
         self.__stop_threads = False
@@ -22,7 +21,6 @@ class DeviceConnection():
         self.__connection: socket.socket = conn
         self.__bufferLen: int = bufferLen
         self.__socket_exception_flag = False
-        self.__connected_devices = connected_devices
         self.__broker = broker
 
         print(f"Dispositivo {addr} conectado.")

@@ -53,7 +53,7 @@ class Communicator:
                 else:
                     print(f'Dispositivo {res} abriu conexão')
                     DeviceConnection(
-                        conn, addr, self.__bufferLen, self.__connected_devices, self.__broker).start()
+                        conn, addr, self.__bufferLen, self.__broker).start()
 
             except Exception as ex:
                 print(f'Dispositivo {res} falhou em abrir a conexão')
