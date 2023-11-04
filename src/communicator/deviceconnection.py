@@ -85,7 +85,6 @@ class DeviceConnection():
             print(f"Erro comunicando com o Dispositivo {self.__id}.")
             self.__broker.remove_pub(self.__id)
             self.__finish()
-        return ret
 
     def start(self):
         self.__connection.settimeout(15.0)
