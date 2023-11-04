@@ -62,6 +62,7 @@ class DeviceConnection():
         while True:
             try:
                 socket_data = self.__receive()
+                print(f"Dado recebido...{socket_data}")
                 if(socket_data == "alive"):
                     print(f"Dipositivo {self.__id} está vivo.")
                 else:
