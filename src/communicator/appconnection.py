@@ -82,12 +82,16 @@ class DeviceConnection():
             print(f'Dispositivo com ID inválido')
             data = "fail"
             try:
-                conn.send(data)
-                sys.stdout.flush()
+                self.__send(data)
             except Exception:
                 pass
             self.__finish()
             return
         else:
+            data = "ok"
+            try:
+                self.__connection.send(data)
+            except:
+                pass
             self.__broker.add_subscriber(res, self)
             Thread(target=self.__execute, daemon=False).start()

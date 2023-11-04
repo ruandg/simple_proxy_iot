@@ -80,7 +80,6 @@ class DeviceConnection():
             data = "fail"
             try:
                 self.__connection.send(data)
-                sys.stdout.flush()
             except:
                 pass
             self.__finish()
@@ -88,7 +87,6 @@ class DeviceConnection():
             data = "ok"
             try:
                 self.__connection.send(data)
-                sys.stdout.flush()
             except:
                 pass
         Thread(target=self.__execute, daemon=False).start()
