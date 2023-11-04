@@ -43,7 +43,9 @@ class DeviceConnection():
 
     def __receive(self) -> str:
         try:
+            self.__connection.settimeout(15.0)
             data = self.__connection.recv(self.__bufferLen)
+            self.__connection.sock.settimeout(None)
             sys.stdout.flush()
             data = data.decode("utf-8")
             return data
@@ -94,5 +96,4 @@ class DeviceConnection():
                 traceback.print_exception(type(ex), ex, ex.__traceback__)
                 self.__broker.remove_pub(self.__id)
                 self.__finish()
-            self.__connection.settimeout(15.0)
             Thread(target=self.__execute, daemon=False).start()

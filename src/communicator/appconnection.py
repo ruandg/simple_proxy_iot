@@ -47,7 +47,9 @@ class DeviceConnection():
 
     def __receive(self) -> str:
         try:
+            self.__connection.settimeout(15.0)
             data = self.__connection.recv(self.__bufferLen)
+            self.__connection.sock.settimeout(None)
             sys.stdout.flush()
             data = data.decode("utf-8")
             return data
@@ -90,7 +92,7 @@ class DeviceConnection():
         else:
             data = "ok"
             try:
-                self.__connection.send(data)
+                self.__send(data)
             except:
                 pass
             self.__broker.add_subscriber(res, self)
