@@ -81,16 +81,18 @@ class DeviceConnection():
             data = "fail"
             try:
                 self.__connection.send(data)
-            except:
+            except Exception as ex:
                 print(f"Erro enviando fail ao Dispositivo {self.__id}.")
+                traceback.print_exception(type(ex), ex, ex.__traceback__)
             self.__finish()
             return
         else:
             data = "ok"
             try:
                 self.__connection.send(data)
-            except:
+            except Exception as ex:
                 print(f"Erro enviando ok ao Dispositivo {self.__id}.")
+                traceback.print_exception(type(ex), ex, ex.__traceback__)
                 self.__broker.remove_pub(self.__id)
                 self.__finish()
             Thread(target=self.__execute, daemon=False).start()
