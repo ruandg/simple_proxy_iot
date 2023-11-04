@@ -71,7 +71,7 @@ class DeviceConnection():
         except Exception as ex:
             raise ex            
 
-    def execute(self):
+    def __execute(self):
         try:
             while True:
                 socket_data = self.__receive()
