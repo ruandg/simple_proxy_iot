@@ -52,6 +52,7 @@ class DeviceConnection():
 
     def __send(self, data: str):
         try:
+            print(f"Sending...{data}")
             self.__connection.send(data.encode("ascii"))
             sys.stdout.flush()
         except Exception as ex:
@@ -81,12 +82,14 @@ class DeviceConnection():
             try:
                 self.__connection.send(data)
             except:
-                pass
+                print(f"Erro comunicando com o Dispositivo {self.__id}.")
             self.__finish()
         else:
             data = "ok"
             try:
                 self.__connection.send(data)
             except:
-                pass
+                print(f"Erro comunicando com o Dispositivo {self.__id}.")
+                self.__broker.remove_pub(self.__id)
+                self.__finish()
         Thread(target=self.__execute, daemon=False).start()
