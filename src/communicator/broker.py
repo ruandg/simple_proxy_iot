@@ -17,7 +17,7 @@ class Broker:
     def add_publisher(self, pub_id):
         with self.__mutex:
             if not(pub_id in self.__subscribers):
-                self.__subscribers[pub_id] = ([],True)
+                self.__subscribers[pub_id] = [[],True]
                 return True
             elif self.__subscribers[pub_id][1] == True:
                 return False
@@ -28,7 +28,7 @@ class Broker:
     def add_subscriber(self, pub_id, sub):
         with self.__mutex:
             if not(pub_id in self.__subscribers):
-                self.__subscribers[pub_id] = ([],False)
+                self.__subscribers[pub_id] = [[],False]
             if not(sub in self.__subscribers[pub_id]):
                 self.__subscribers[pub_id][0].append(sub)
 
