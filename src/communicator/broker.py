@@ -26,7 +26,7 @@ class Broker:
         with self.__mutex:
             if not(pub_id in self.__subscribers):
                 self.__subscribers[pub_id] = []
-            if not(sub_id in self.__subscribers[pub_id]):
+            if not(sub in self.__subscribers[pub_id]):
                 self.__subscribers[pub_id].append(sub)
 
     def publish(self, pub_id, data):
