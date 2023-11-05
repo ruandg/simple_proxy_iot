@@ -19,7 +19,7 @@ class Broker:
             if not(pub_id in self.__subscribers):
                 self.__subscribers[pub_id] = ([],True)
                 return True
-            else if self.__subscribers[pub_id][1] == True:
+            elif self.__subscribers[pub_id][1] == True:
                 return False
             else:
                 self.__subscribers[pub_id][1] = True
