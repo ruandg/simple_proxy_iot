@@ -48,7 +48,7 @@ class Communicator:
                     conn.send(data.encode("ascii"))
                     sys.stdout.flush()
                     AppConnection(
-                        conn, self.__bufferLen, self.__broker).start()
+                        conn, addr, self.__bufferLen, self.__broker).start()
                     continue
                 elif len(res) < 8 or len(res) > 13 or (not res.isnumeric()):
                     print(f'Dispositivo ou aplicação {res} falhou em abrir a conexão - ID inválido')

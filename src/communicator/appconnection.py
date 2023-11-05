@@ -11,6 +11,7 @@ class AppConnection():
     def __init__(
         self,
         conn: socket.socket,
+        addr: tuple,
         bufferLen: int,
         broker = None
     ):        
@@ -21,7 +22,7 @@ class AppConnection():
         self.__broker = broker
 
 
-        print(f"Aplicação conectada.")
+        print(f"Aplicação {addr} conectada.")
 
  
     def send_data(self, data):
