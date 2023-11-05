@@ -6,10 +6,6 @@ from threading import Thread, Lock, Semaphore, get_native_id
 from queue import Queue, Full
 from time import sleep
 
-import pika
-
-from utils.logging import Logger
-
 class AppConnection():
 
     def __init__(
@@ -62,16 +58,16 @@ class AppConnection():
             raise ex                     
 
     def __execute(self):
-        try:
-            while True:
-                data = self.__queue.get()
-                try:
-                    conn.send(data)
-                    sys.stdout.flush()
-                except Exception:
-                    print("Erro ao tentar comunicar com a aplicação")
-                    self.__broker.remove_sub(self)
-                    self.__finish()
+        while True:
+            data = self.__queue.get()
+            try:
+                conn.send(data)
+                sys.stdout.flush()
+            except Exception:
+                print("Erro ao tentar comunicar com a aplicação")
+                self.__broker.remove_sub(self)
+                self.__finish()
+                return
 
     def start(self):
         res = conn.recv(self.__bufferLen)
