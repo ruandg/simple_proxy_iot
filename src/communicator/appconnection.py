@@ -30,7 +30,6 @@ class AppConnection():
         except Exception as ex:
             raise ex
 
-
     def __finish(self, active_connection = True):
         print(f"Finalizando tudo para a Aplicação consumindo de {self.__id}.")
         self.__stop_threads = True

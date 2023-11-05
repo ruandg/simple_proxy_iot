@@ -17,22 +17,25 @@ class Broker:
     def add_publisher(self, pub_id):
         with self.__mutex:
             if not(pub_id in self.__subscribers):
-                self.__subscribers[pub_id] = []
+                self.__subscribers[pub_id] = ([],True)
                 return True
-            else:
+            else if self.__subscribers[pub_id][1] == True:
                 return False
+            else:
+                self.__subscribers[pub_id][1] = True
+                return True
 
     def add_subscriber(self, pub_id, sub):
         with self.__mutex:
             if not(pub_id in self.__subscribers):
-                self.__subscribers[pub_id] = []
+                self.__subscribers[pub_id] = ([],False)
             if not(sub in self.__subscribers[pub_id]):
-                self.__subscribers[pub_id].append(sub)
+                self.__subscribers[pub_id][0].append(sub)
 
     def publish(self, pub_id, data):
         with self.__mutex:
             if pub_id in self.__subscribers:
-                for sub in self.__subscribers[pub_id]:
+                for sub in self.__subscribers[pub_id][0]:
                     try:
                         sub.send_data(data)
                     except Full:
@@ -46,6 +49,6 @@ class Broker:
         with self.__mutex:
             for key in self.__subscribers:
                 if sub in self.__subscribers[key]:
-                    self.__subscribers[key].remove(sub)
+                    self.__subscribers[key][0].remove(sub)
 
 
