@@ -36,7 +36,7 @@ class Communicator:
             conn, addr = self.__socket.accept()
             try:
                 conn.settimeout(15)
-                res = conn.recv(self.__bufferLen)[:-1]
+                res = conn.recv(self.__bufferLen)
                 res = res.decode()
                 sys.stdout.flush()
                 if(res == "app"):
