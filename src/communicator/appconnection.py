@@ -21,7 +21,7 @@ class AppConnection():
         self.__broker = broker
 
 
-        printf(f"Aplicação conectada.")
+        print(f"Aplicação conectada.")
 
  
     def send_data(self, data):
@@ -61,8 +61,7 @@ class AppConnection():
         while True:
             data = self.__queue.get()
             try:
-                conn.send(data)
-                sys.stdout.flush()
+                self.__send(data)
             except Exception:
                 print("Erro ao tentar comunicar com a aplicação")
                 self.__broker.remove_sub(self)
@@ -70,9 +69,7 @@ class AppConnection():
                 return
 
     def start(self):
-        res = conn.recv(self.__bufferLen)
-        res = res.decode("utf-8")
-        sys.stdout.flush()
+        res = self.__receive()
         if len(res) < 8 or len(res) > 13 or (not res.isnumeric()):
             print(f'Dispositivo com ID inválido')
             data = "fail"
