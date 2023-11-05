@@ -79,6 +79,7 @@ class AppConnection():
             self.__finish()
             return
         else:
+            self.__id = res
             data = "ok"
             try:
                 self.__send(data)
