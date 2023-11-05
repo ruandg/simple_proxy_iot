@@ -36,7 +36,7 @@ class Communicator:
             conn, addr = self.__socket.accept()
             try:
                 conn.settimeout(15)
-                res = conn.recv(self.__bufferLen)
+                res = conn.recv(self.__bufferLen)[:-1]
                 res = res.decode("utf-8")
                 sys.stdout.flush()
                 if(res == "app"):
@@ -47,7 +47,7 @@ class Communicator:
                 elif len(res) < 8 or len(res) > 13 or (not res.isnumeric()):
                     print(f'Dispositivo ou aplicação {res} falhou em abrir a conexão - ID inválido')
                     data = "fail"
-                    conn.send(data)
+                    conn.send(data.encode("ascii"))
                     sys.stdout.flush()
                     conn.close()
                     continue
