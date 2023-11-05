@@ -4,14 +4,14 @@ Proxy para intermediar a comunicação entre aplicações e dispositivos IoT
 
 ## Requisitos
 
-* Instalar e rodar MongoDB na máquina local ([tutorial](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/))
 * Instalar Python3.10 ou superior ([tutorial](https://computingforgeeks.com/how-to-install-python-on-ubuntu-linux-system/))
-* Instalar pip
 ```
 curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
 ```
-* Instalar dependências 
+
+## Para executar o Proxy, informe o IP e a Porta do servidor (ex: 127.0.0.1 se for executar em localhost)
 ```
-pip install -r requeriments.txt
+python3 src/main.py -a <IP_ADDRESS_OR_URL> -p <PORT>
 ```
+
 
