@@ -37,7 +37,7 @@ class Communicator:
             try:
                 conn.settimeout(15)
                 res = conn.recv(self.__bufferLen)[:-1]
-                res = res.decode("utf-8")
+                res = res.decode()
                 sys.stdout.flush()
                 if(res == "app"):
                     #app connected
