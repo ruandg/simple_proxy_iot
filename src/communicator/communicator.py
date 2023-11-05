@@ -42,7 +42,9 @@ class Communicator:
                 if(res == "app"):
                     #app connected
                     #create thread for the app 
-                    conn.close()
+                    print("App abriu conexão")
+                    AppConnection(
+                        conn, self.__bufferLen, self.__broker).start()
                     continue
                 elif len(res) < 8 or len(res) > 13 or (not res.isnumeric()):
                     print(f'Dispositivo ou aplicação {res} falhou em abrir a conexão - ID inválido')

@@ -10,7 +10,7 @@ import pika
 
 from utils.logging import Logger
 
-class DeviceConnection():
+class AppConnection():
 
     def __init__(
         self,
