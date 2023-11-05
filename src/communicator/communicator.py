@@ -44,6 +44,9 @@ class Communicator:
                     #app connected
                     #create thread for the app 
                     print("App abriu conexão")
+                    data = "ok"
+                    conn.send(data.encode("ascii"))
+                    sys.stdout.flush()
                     AppConnection(
                         conn, self.__bufferLen, self.__broker).start()
                     continue
