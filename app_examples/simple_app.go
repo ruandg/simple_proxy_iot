@@ -7,13 +7,14 @@ import (
 func main() {
     args := os.Args[1:]
 
-    if(len(args) != 2){
-        println("usage: simple_app.go SERVER_ADDRESS_OR_URL PORT")
+    if(len(args) != 3){
+        println("usage: simple_app.go SERVER_ADDRESS_OR_URL PORT DEVICE_ID")
         return;
     }
 
     addr := args[0]
     port := args[1]
+    device_id := args[2]
 
     servAddr := addr+":"+port
 
@@ -36,16 +37,18 @@ func main() {
     }
 
     reply := make([]byte, 1024)
+    nbytes := 0
 
-    _, err = conn.Read(reply)
+    nbytes, err = conn.Read(reply)
     if err != nil {
         println("Reade from server failed:", err.Error())
         os.Exit(1)
     }
+    reply[nbytes] = 0 //character indicating the end of the string
 
     println(string(reply))
    
-    data = "123456789"
+    data = device_id
 
     _, err = conn.Write([]byte(data))
     if err != nil {
@@ -53,19 +56,20 @@ func main() {
         os.Exit(1)
     }
 
-    _, err = conn.Read(reply)
+    nbytes, err = conn.Read(reply)
     if err != nil {
         println("Read from server failed:", err.Error())
         os.Exit(1)
     }
-
+    reply[nbytes] = 0 //character indicating the end of the string
     println(string(reply))
 
-    _, err = conn.Read(reply)
+    nbytes, err = conn.Read(reply)
     if err != nil {
         println("Read from server failed:", err.Error())
         os.Exit(1)
     }
+    reply[nbytes] = 0 //character indicating the end of the string
 
     println("Dado recebido: ", string(reply))
 

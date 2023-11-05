@@ -1,6 +1,6 @@
 import socket
 import argparse
-
+import time
 
 # Construct the argument parser
 ap = argparse.ArgumentParser()
@@ -28,14 +28,6 @@ sock.connect((HOST, PORT))
 print("conectado")
 
 # Send a request to the host
-sock.send("app\n".encode()[:-1])
-
-# Get the host's response, no more than, say, 1,024 bytes
-response_data = sock.recv(1024)
-
-print(response_data.decode("utf-8"))
-
-# Send a request to the host
 sock.send((device_id+"\n").encode()[:-1])
 
 # Get the host's response, no more than, say, 1,024 bytes
@@ -43,10 +35,11 @@ response_data = sock.recv(1024)
 
 print(response_data.decode("utf-8"))
 
-# Get the host's response, no more than, say, 1,024 bytes
-response_data = sock.recv(1024).decode("utf-8")
-
-print(f"Dado recebido: {response_data}")
+#sending 10 values
+for i in range(10):
+   print("Enviando valor: "+str(i))
+   sock.send((str(i)+"\n").encode()[:-1])
+   time.sleep(1)
 
 # Terminate
 sock.close( )
