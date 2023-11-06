@@ -1,12 +1,10 @@
 import socket
 import threading
-import json
 import traceback
 import sys
 
 from communicator.deviceconnection import DeviceConnection
 from communicator.appconnection import AppConnection
-from time import sleep
 from communicator.broker import Broker
 
 class Communicator:

@@ -2,9 +2,7 @@ import sys
 import socket
 import traceback
 
-from threading import Thread, Lock, Semaphore, get_native_id
-from queue import Queue, Full
-from time import sleep
+from threading import Thread
 from communicator.broker import Broker
 
 class DeviceConnection():
@@ -74,6 +72,7 @@ class DeviceConnection():
                     return
             except Exception as ex:
                 print(f"Erro comunicando com o Dispositivo {self.__id}.")
+                traceback.print_exception(type(ex), ex, ex.__traceback__)
                 self.__broker.remove_pub(self.__id)
                 self.__finish()
                 return

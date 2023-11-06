@@ -1,7 +1,5 @@
 import socket
 import threading
-import json
-import traceback
 import sys
 from threading import Lock
 
@@ -38,17 +36,21 @@ class Broker:
                 for sub in self.__subscribers[pub_id][0]:
                     try:
                         sub.send_data(data)
-                    except Full:
-                        print("Fila de mensagens cheia")
+                    except:
+                        pass
 
     def remove_pub(self, pub_id):
         with self.__mutex:
-            self.__subscribers.pop(pub_id, None)
+            if(len(self.__subscribers[pub_id][0]) == 0):
+                self.__subscribers.pop(pub_id, None)
+            else:
+                self.__subscribers[pub_id][1] = False
 
     def remove_sub(self, sub):
         with self.__mutex:
             for key in self.__subscribers:
-                if sub in self.__subscribers[key]:
+                if sub in self.__subscribers[key][0]:
                     self.__subscribers[key][0].remove(sub)
-
+                    if(len(self.__subscribers[key][0]) == 0 and self.__subscribers[key][1] == False):
+                        self.__subscribers.pop(key, None)
 

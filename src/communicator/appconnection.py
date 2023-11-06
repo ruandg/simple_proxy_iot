@@ -1,10 +1,8 @@
 import sys
 import socket
-import traceback
 
-from threading import Thread, Lock, Semaphore, get_native_id
+from threading import Thread
 from queue import Queue, Full
-from time import sleep
 
 class AppConnection():
 
@@ -29,6 +27,7 @@ class AppConnection():
         try:
             self.__queue.put_nowait(data)
         except Exception as ex:
+            print("Fila cheia, mensagem descartada")
             raise ex
 
     def __finish(self, active_connection = True):
