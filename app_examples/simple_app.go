@@ -41,12 +41,17 @@ func main() {
 
     nbytes, err = conn.Read(reply)
     if err != nil {
-        println("Reade from server failed:", err.Error())
+        println("Read from server failed:", err.Error())
         os.Exit(1)
     }
-    reply[nbytes] = 0 //character indicating the end of the string
+   
+    sreply := string(reply[:nbytes])
+    println(sreply)
 
-    println(string(reply))
+    if(sreply == "fail") {
+        conn.Close()
+        os.Exit(1)
+    }
    
     data = device_id
 
@@ -61,8 +66,14 @@ func main() {
         println("Read from server failed:", err.Error())
         os.Exit(1)
     }
-    reply[nbytes] = 0 //character indicating the end of the string
-    println(string(reply))
+    
+    sreply = string(reply[:nbytes])
+    println(sreply)
+
+    if(sreply == "fail") {
+        conn.Close()
+        os.Exit(1)
+    }
 
     nbytes, err = conn.Read(reply)
     if err != nil {

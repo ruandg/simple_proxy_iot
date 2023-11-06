@@ -33,7 +33,12 @@ sock.send((device_id+"\n").encode()[:-1])
 # Get the host's response, no more than, say, 1,024 bytes
 response_data = sock.recv(1024)
 
-print(response_data.decode("utf-8"))
+sresponse = response_data.decode("utf-8") 
+print(sresponse)
+
+if(sresponse == "fail"):
+   sock.close()
+   exit()
 
 #sending 10 values
 for i in range(10):
