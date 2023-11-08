@@ -15,8 +15,6 @@ class Communicator:
         port=8080,
         bufferLen=4096,
         backlog=100,
-        logAddr='localhost',
-        logport=27017
     ):
         self.__addr = addr
         self.__port = port
