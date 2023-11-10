@@ -1,9 +1,17 @@
 import sys
 import socket
 import traceback
+import json
 
 from threading import Thread
 from communicator.broker import Broker
+
+def check_json(entrada):
+    try:
+        json.loads(entrada)
+        return True
+    except ValueError:
+        return False
 
 class DeviceConnection():
 
@@ -62,9 +70,11 @@ class DeviceConnection():
                 socket_data = self.__receive()
                 if(socket_data == "alive"):
                     print(f"Dipositivo {self.__id} está vivo.")
-                elif(socket_data.isnumeric()):
+                
+                elif(socket_data.isnumeric() or check_json(socket_data)):
                     print(f"{self.__id} publicando {socket_data} no broker.")
                     self.__broker.publish(self.__id,socket_data)
+                
                 else:
                     print(f"Dispositivo {self.__id} fechou conexão.")
                     self.__broker.remove_pub(self.__id)
