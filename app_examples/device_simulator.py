@@ -46,5 +46,18 @@ for i in range(10):
    sock.send((str(i)+"\n").encode()[:-1])
    time.sleep(1)
 
+sock.send(("alive"+"\n").encode()[:-1])
+
+# Get the host's response, no more than, say, 1,024 bytes
+response_data = sock.recv(1024)
+
+sresponse = response_data.decode("utf-8") 
+print(sresponse)
+
+if(sresponse == "fail"):
+   sock.close()
+   exit()
+
+
 # Terminate
 sock.close( )
