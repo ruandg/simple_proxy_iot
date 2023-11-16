@@ -71,7 +71,8 @@ class DeviceConnection():
                 socket_data = self.__receive()
                 if(socket_data == "alive"):
                     print_log(f"Dipositivo {self.__id} está vivo.")
-                
+                    data = "ok"
+                    self.__send(data)
                 elif(socket_data.isnumeric() or check_json(socket_data)):
                     print_log(f"{self.__id} publicando {socket_data} no broker.")
                     self.__broker.publish(self.__id,socket_data)
