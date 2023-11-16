@@ -3,6 +3,7 @@ import socket
 
 from threading import Thread
 from queue import Queue, Full
+from communicator.print_log import print_log
 
 class AppConnection():
 
@@ -20,18 +21,18 @@ class AppConnection():
         self.__broker = broker
 
 
-        print(f"Aplicação {addr} conectada.")
+        print_log(f"Aplicação {addr} conectada.")
 
  
     def send_data(self, data):
         try:
             self.__queue.put_nowait(data)
         except Exception as ex:
-            print("Fila cheia, mensagem descartada")
+            print_log("Fila cheia, mensagem descartada")
             raise ex
 
     def __finish(self, active_connection = True):
-        print(f"Finalizando tudo para a Aplicação consumindo de {self.__id}.")
+        print_log(f"Finalizando tudo para a Aplicação consumindo de {self.__id}.")
         self.__stop_threads = True
         try:
             self.__connection.shutdown(socket.SHUT_RDWR)
@@ -62,7 +63,7 @@ class AppConnection():
             try:
                 self.__send(data)
             except Exception:
-                print("Erro ao tentar comunicar com a aplicação")
+                print_log("Erro ao tentar comunicar com a aplicação")
                 self.__broker.remove_sub(self)
                 self.__finish()
                 return
@@ -70,7 +71,7 @@ class AppConnection():
     def start(self):
         res = self.__receive()
         if len(res) < 8 or len(res) > 13 or (not res.isnumeric()):
-            print(f'Dispositivo com ID inválido')
+            print_log(f'Dispositivo com ID inválido')
             data = "fail"
             try:
                 self.__send(data)

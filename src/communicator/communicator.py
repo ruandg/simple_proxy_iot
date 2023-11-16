@@ -2,10 +2,12 @@ import socket
 import threading
 import traceback
 import sys
+from datetime import datetime
 
 from communicator.deviceconnection import DeviceConnection
 from communicator.appconnection import AppConnection
 from communicator.broker import Broker
+from communicator.print_log import print_log
 
 class Communicator:
 
@@ -27,7 +29,7 @@ class Communicator:
     def __listen(self):
         self.__socket.bind((self.__addr, self.__port))
         self.__socket.listen(self.__backlog)
-        print(f'Executando na porta {self.__port}.')
+        print_log(f'Executando na porta {self.__port}.')
 
         while True:
             conn, addr = self.__socket.accept()
@@ -39,7 +41,7 @@ class Communicator:
                 if(res == "app"):
                     #app connected
                     #create thread for the app 
-                    print("App abriu conexão")
+                    print_log("App abriu conexão")
                     data = "ok"
                     conn.send(data.encode("ascii"))
                     sys.stdout.flush()
@@ -47,19 +49,19 @@ class Communicator:
                         conn, addr, self.__bufferLen, self.__broker).start()
                     continue
                 elif len(res) < 8 or len(res) > 13 or (not res.isnumeric()):
-                    print(f'Dispositivo ou aplicação {res} falhou em abrir a conexão - ID inválido')
+                    print_log(f'Dispositivo ou aplicação {res} falhou em abrir a conexão - ID inválido')
                     data = "fail"
                     conn.send(data.encode("ascii"))
                     sys.stdout.flush()
                     conn.close()
                     continue
                 else:
-                    print(f'Dispositivo {res} abriu conexão')
+                    print_log(f'Dispositivo {res} abriu conexão')
                     DeviceConnection(
                         conn, res, addr, self.__bufferLen, self.__broker).start()
 
             except Exception as ex:
-                print(f'Dispositivo {res} falhou em abrir a conexão')
+                print_log(f'Dispositivo {res} falhou em abrir a conexão')
                 traceback.print_exception(type(ex), ex, ex.__traceback__)
                 continue
            
@@ -68,5 +70,5 @@ class Communicator:
         self.__listen()
 
     def close(self):
-        print(f'Encerrando o proxy.')
+        print_log(f'Encerrando o proxy.')
         self.__socket.close()
